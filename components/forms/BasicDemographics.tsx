@@ -1,6 +1,9 @@
 import { FormField } from "../ui/form-field";
 import { Card } from "../ui/card";
 import { FormSectionProps } from "./types";
+import { PhoneInput } from "../ui/phone-input";
+import { DatePicker } from "../ui/date-picker";
+import { Label } from "../ui/label";
 
 export function BasicDemographics({
   formData,
@@ -9,108 +12,95 @@ export function BasicDemographics({
   return (
     <Card className="p-6 bg-card text-card-foreground">
       <h2 className="text-2xl font-bold mb-4 text-foreground">
-        Basic Demographics
+        Datos Demográficos Básicos
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="space-y-2">
+          <Label>Fecha*</Label>
+          <DatePicker
+            date={formData.fecha ? new Date(formData.fecha) : undefined}
+            onSelect={(date) => updateFormData("fecha", date?.toISOString().split('T')[0])}
+            placeholder="Seleccione fecha"
+            className="w-full"
+          />
+        </div>
         <FormField
-          label="First Name"
+          label="Nombre y Apellido"
           type="text"
           required
-          value={formData.firstName}
-          onChange={(e) => updateFormData("firstName", e.target.value)}
-        />
-        <FormField
-          label="Middle Name"
-          type="text"
-          value={formData.middleName}
-          onChange={(e) => updateFormData("middleName", e.target.value)}
-        />
-        <FormField
-          label="Last Name"
-          type="text"
-          required
-          value={formData.lastName}
-          onChange={(e) => updateFormData("lastName", e.target.value)}
-        />
-        <FormField
-          label="Date of Birth"
-          type="date"
-          required
-          value={formData.dateOfBirth}
-          onChange={(e) => updateFormData("dateOfBirth", e.target.value)}
-        />
-        <FormField label="Age" type="number" readOnly value={formData.age} />
-        <FormField
-          label="Gender Identity"
-          type="text"
-          value={formData.genderIdentity}
-          onChange={(e) => updateFormData("genderIdentity", e.target.value)}
-        />
-        <FormField
-          label="Sex Assigned at Birth"
-          type="text"
-          value={formData.sexAssignedAtBirth}
-          onChange={(e) => updateFormData("sexAssignedAtBirth", e.target.value)}
-        />
-        <FormField
-          label="Preferred Name"
-          type="text"
-          value={formData.preferredName}
-          onChange={(e) => updateFormData("preferredName", e.target.value)}
-        />
-        <FormField
-          label="Preferred Pronouns"
-          type="text"
-          value={formData.preferredPronouns}
-          onChange={(e) => updateFormData("preferredPronouns", e.target.value)}
-        />
-        <FormField
-          label="Social Security Number"
-          type="password"
-          required
-          className="bg-transparent"
-          value={formData.socialSecurityNumber}
-          onChange={(e) =>
-            updateFormData("socialSecurityNumber", e.target.value)
-          }
+          value={formData.nombreApellido}
+          onChange={(e) => updateFormData("nombreApellido", e.target.value)}
         />
         <div className="space-y-2">
+          <Label>Fecha de nacimiento*</Label>
+          <DatePicker
+            date={formData.fechaNacimiento ? new Date(formData.fechaNacimiento) : undefined}
+            onSelect={(date) => updateFormData("fechaNacimiento", date?.toISOString().split('T')[0])}
+            placeholder="Seleccione fecha de nacimiento"
+            className="w-full"
+          />
+        </div>
+        <FormField label="Edad" type="number" readOnly value={formData.edad} />
+        <div className="space-y-2">
           <label className="block text-sm font-medium text-muted-foreground">
-            Marital Status
+            Estado Civil
           </label>
           <select
             className="w-full rounded-md border border-input bg-background text-foreground px-3 py-1 text-sm shadow-sm ring-offset-background focus:ring-2 focus:ring-ring"
-            value={formData.maritalStatus}
-            onChange={(e) => updateFormData("maritalStatus", e.target.value)}
+            value={formData.estadoCivil}
+            onChange={(e) => updateFormData("estadoCivil", e.target.value)}
           >
-            <option value="">Select Marital Status</option>
-            <option value="single">Single</option>
-            <option value="married">Married</option>
-            <option value="divorced">Divorced</option>
-            <option value="widowed">Widowed</option>
+            <option value="">Seleccionar Estado Civil</option>
+            <option value="soltero">Soltero/a</option>
+            <option value="casado">Casado/a</option>
+            <option value="divorciado">Divorciado/a</option>
+            <option value="viudo">Viudo/a</option>
           </select>
         </div>
         <FormField
-          label="Preferred Language"
+          label="Nacionalidad"
           type="text"
-          value={formData.preferredLanguage}
-          onChange={(e) => updateFormData("preferredLanguage", e.target.value)}
+          value={formData.nacionalidad}
+          onChange={(e) => updateFormData("nacionalidad", e.target.value)}
+        />
+        <FormField
+          label="Documento"
+          type="text"
+          required
+          value={formData.documento}
+          onChange={(e) => updateFormData("documento", e.target.value)}
+        />
+        <FormField
+          label="Dirección"
+          type="text"
+          required
+          value={formData.direccion}
+          onChange={(e) => updateFormData("direccion", e.target.value)}
+        />
+        <FormField
+          label="Localidad"
+          type="text"
+          required
+          value={formData.localidad}
+          onChange={(e) => updateFormData("localidad", e.target.value)}
         />
         <div className="space-y-2">
           <label className="block text-sm font-medium text-muted-foreground">
-            Need Interpreter?
+            Celular
           </label>
-          <select
-            className="w-full rounded-md border border-input bg-background text-foreground px-3 py-1 text-sm shadow-sm ring-offset-background focus:ring-2 focus:ring-ring"
-            value={formData.needInterpreter ? "true" : "false"}
-            onChange={(e) =>
-              updateFormData("needInterpreter", e.target.value === "true")
-            }
-          >
-            <option value="false">No</option>
-            <option value="true">Yes</option>
-          </select>
+          <PhoneInput
+            value={formData.celular}
+            onChange={(value) => updateFormData("celular", value)}
+            defaultCountry="UY"
+          />
         </div>
+        <FormField
+          label="Mail"
+          type="email"
+          required
+          value={formData.mail}
+          onChange={(e) => updateFormData("mail", e.target.value)}
+        />
       </div>
     </Card>
   );

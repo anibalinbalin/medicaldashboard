@@ -4,30 +4,27 @@ import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { PatientData } from "./forms/types";
 import { BasicDemographics } from "./forms/BasicDemographics";
-import { ContactInformation } from "./forms/ContactInformation";
-import { EmergencyContacts } from "./forms/EmergencyContacts";
-import { InsuranceInformation } from "./forms/InsuranceInformation";
 import { MedicalInformation } from "./forms/MedicalInformation";
 import { PrivacyConsent } from "./forms/PrivacyConsent";
 import { createPatient, createEmergencyContact } from "@/lib/supabase";
 import { supabase } from "@/lib/supabase-auth";
 
 export function PatientRegistrationForm() {
-  const [formData, setFormData] = useState<PatientData>({
-    // ... (previous state remains the same)
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    dateOfBirth: "",
-    age: 0,
-    genderIdentity: "",
-    sexAssignedAtBirth: "",
-    preferredName: "",
-    preferredPronouns: "",
-    socialSecurityNumber: "",
-    maritalStatus: "",
-    preferredLanguage: "",
-    needInterpreter: false,
+  const initialFormData = {
+    // Basic Demographics (Spanish)
+    fecha: "",
+    nombreApellido: "",
+    fechaNacimiento: "",
+    edad: 0,
+    estadoCivil: "",
+    nacionalidad: "",
+    documento: "",
+    direccion: "",
+    localidad: "",
+    celular: "",
+    mail: "",
+
+    // Contact Information
     primaryPhone: "",
     secondaryPhone: "",
     email: "",
@@ -96,16 +93,40 @@ export function PatientRegistrationForm() {
     advanceDirectivesStatus: false,
     researchParticipation: false,
     photoVideoConsent: false,
-  });
+    commonAllergies: [] as string[],
+
+    // Add these missing fields
+    motivoConsulta: "",
+    antecedentesFamiliares: "",
+    antecedentesFamiliaresEsteticos: {
+      hasSurgeries: false,
+      hasPathologicalScarring: false,
+      hasAtopy: false,
+      otherSkinConditions: ""
+    },
+    antecedentesPersonales: "",
+    peso: "",
+    altura: "",
+    imc: "",
+    grupoSanguineo: "",
+    heridasCicatrices: "",
+    ultimaVacunaAntitetanica: "",
+    antecedentesPsiquiatricos: "",
+    alergiasHipersensibilidad: "",
+    medicacionActual: "",
+    productosFarmacoesteticos: "",
+  };
+
+  const [formData, setFormData] = useState<PatientData>(initialFormData);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  // Calculate age from DOB
+  // Calculate age from fecha de nacimiento
   useEffect(() => {
-    if (formData.dateOfBirth) {
-      const birthDate = new Date(formData.dateOfBirth);
+    if (formData.fechaNacimiento) {
+      const birthDate = new Date(formData.fechaNacimiento);
       const today = new Date();
       let age = today.getFullYear() - birthDate.getFullYear();
       const monthDiff = today.getMonth() - birthDate.getMonth();
@@ -117,9 +138,9 @@ export function PatientRegistrationForm() {
         age--;
       }
 
-      updateFormData("age", age);
+      updateFormData("edad", age);
     }
-  }, [formData.dateOfBirth]);
+  }, [formData.fechaNacimiento]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -148,18 +169,12 @@ export function PatientRegistrationForm() {
 
       setSuccess(true);
       // Reset form
-      setFormData({
-        ...formData,
-        firstName: "",
-        lastName: "",
-        dateOfBirth: "",
-        // ... reset other fields as needed
-      });
+      setFormData(initialFormData);
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
-          : "An error occurred while saving the patient data"
+          : "Ocurrió un error al guardar los datos del paciente"
       );
     } finally {
       setIsSubmitting(false);
@@ -224,7 +239,7 @@ export function PatientRegistrationForm() {
     <div className="space-y-8 max-w-4xl mx-auto p-6">
       <div className="flex justify-end">
         <Button onClick={handleSignOut} variant="outline" className="mb-4">
-          Sign Out
+          Cerrar Sesión
         </Button>
       </div>
 
@@ -237,23 +252,11 @@ export function PatientRegistrationForm() {
 
         {success && (
           <div className="bg-emerald-500/10 border border-emerald-500 text-emerald-500 rounded-md p-4 mb-4">
-            Patient registration completed successfully!
+            ¡Registro de paciente completado exitosamente!
           </div>
         )}
 
         <BasicDemographics
-          formData={formData}
-          updateFormData={updateFormData}
-        />
-        <ContactInformation
-          formData={formData}
-          updateFormData={updateFormData}
-        />
-        <EmergencyContacts
-          formData={formData}
-          updateFormData={updateFormData}
-        />
-        <InsuranceInformation
           formData={formData}
           updateFormData={updateFormData}
         />
@@ -272,7 +275,7 @@ export function PatientRegistrationForm() {
             disabled={isSubmitting}
             className={isSubmitting ? "opacity-50 cursor-not-allowed" : ""}
           >
-            {isSubmitting ? "Submitting..." : "Submit Registration"}
+            {isSubmitting ? "Enviando..." : "Enviar Registro"}
           </Button>
         </div>
       </form>

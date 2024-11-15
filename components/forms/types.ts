@@ -22,19 +22,6 @@ export interface Address {
   zipCode: string;
 }
 
-export interface Allergy {
-  allergen: string;
-  reactionType: string;
-  severity: string;
-}
-
-export interface Medication {
-  name: string;
-  dosage: string;
-  frequency: string;
-  prescribingPhysician: string;
-}
-
 export interface Surgery {
   procedureType: string;
   date: string;
@@ -54,21 +41,26 @@ export interface Pharmacy {
   phoneNumber: string;
 }
 
+export interface AestheticFamilyHistory {
+  hasSurgeries: boolean;
+  hasPathologicalScarring: boolean;
+  hasAtopy: boolean;
+  otherSkinConditions: string;
+}
+
 export interface PatientData {
   // Basic Demographics
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  dateOfBirth: string;
-  age: number;
-  genderIdentity: string;
-  sexAssignedAtBirth: string;
-  preferredName: string;
-  preferredPronouns: string;
-  socialSecurityNumber: string;
-  maritalStatus: string;
-  preferredLanguage: string;
-  needInterpreter: boolean;
+  fecha: string;
+  nombreApellido: string;
+  fechaNacimiento: string;
+  edad: number;
+  estadoCivil: string;
+  nacionalidad: string;
+  documento: string;
+  direccion: string;
+  localidad: string;
+  celular: string;
+  mail: string;
 
   // Contact Information
   primaryPhone: string;
@@ -93,17 +85,25 @@ export interface PatientData {
   };
 
   // Medical Information
+  motivoConsulta: string;
+  antecedentesFamiliares: string;
+  antecedentesFamiliaresEsteticos: AestheticFamilyHistory;
+  antecedentesPersonales: string;
+  peso: string;
+  altura: string;
+  imc: string;
+  grupoSanguineo: string;
+  heridasCicatrices: string;
+  ultimaVacunaAntitetanica: string;
+  antecedentesPsiquiatricos: string;
+  alergiasHipersensibilidad: string;
+  medicacionActual: string;
+  productosFarmacoesteticos: string;
   bloodType: string;
   height: string;
   weight: string;
   primaryCarePhysician: string;
   referringPhysician: string;
-  allergies: Allergy[];
-  currentMedications: Medication[];
-  chronicConditions: string[];
-  previousSurgeries: Surgery[];
-  immunizationHistory: string[];
-  familyMedicalHistory: string[];
 
   // Visit Information
   appointmentHistory: Appointment[];
@@ -133,6 +133,78 @@ export interface PatientData {
   advanceDirectivesStatus: boolean;
   researchParticipation: boolean;
   photoVideoConsent: boolean;
+
+  // Aesthetic Family History
+  hasSurgeries: boolean;
+  cirugiasNotes: string;
+  hasPathologicalScarring: boolean;
+  pathologicalScarringNotes: string;
+  hasAtopias: boolean;
+  atopiasNotes: string;
+
+  // Heridas y Cicatrices
+  hasScarsOrWounds: boolean;
+  scarsOrWoundsNotes: string;
+
+  // Psychiatric History
+  hasPsychiatricHistory: boolean;
+  antecedentesPsiquiatricos: string;
+
+  // Personal Medical History
+  hasPersonalAntecedents: boolean;
+  antecedentesPersonales: string;
+
+  // Allergies
+  alergiasHipersensibilidad: string;
+
+  // Current Medication
+  hasCurrentMedication: boolean;
+  medicacionActual: string;
+
+  // Pharmaceutical Products
+  hasPharmaceuticalProducts: boolean;
+  productosFarmacoesteticos: string;
+
+  // Habits
+  isSmoker: boolean;
+  smokingDetails?: string;
+  consumesAlcohol: boolean;
+  alcoholDetails?: string;
+  doesExercise: boolean;
+  exerciseDetails?: string;
+  hasSleepIssues: boolean;
+  sleepDetails?: string;
+  hasSpecialDiet: boolean;
+  dietDetails?: string;
+
+  // Sleep Quality
+  sleepQuality: boolean;
+  sleepQualityNotes?: string;
+  difficultyFallingAsleep: boolean;
+  timeToFallAsleep?: string;
+  wakesUpAtNight: boolean;
+  timesWakingUp?: string;
+  wakesUpEarly: boolean;
+  wakesUpEarlyNotes?: string;
+  sleepsDuringInactivity: boolean;
+  sleepsDuringInactivityNotes?: string;
+  sleepsDuringActivity: boolean;
+  sleepsDuringActivityNotes?: string;
+
+  // Aesthetic Treatments
+  hasAestheticTreatments: boolean;
+  wasSatisfied?: boolean;
+  treatmentDate?: string;
+  treatmentLocation?: string;
+  treatmentProposal?: string;
+
+  // Laboratory and Complementary Studies
+  hasLabStudies: boolean;
+  labStudiesNotes?: string;
+
+  // Evolution
+  hasEvolution: boolean;
+  evolutionNotes?: string;
 }
 
 export interface FormSectionProps {
@@ -141,3 +213,29 @@ export interface FormSectionProps {
   addArrayItem?: (path: string, item: any) => void;
   removeArrayItem?: (path: string, index: number) => void;
 }
+
+export interface MedicalInformationData {
+  // ... other fields
+  aestheticAntecedents: string[];  // Add this field
+  grupoSanguineo: string;
+}
+
+export const BLOOD_TYPES = [
+  "A+",
+  "A-",
+  "B+",
+  "B-",
+  "AB+",
+  "AB-",
+  "O+",
+  "O-",
+] as const;
+
+export type BloodType = typeof BLOOD_TYPES[number];
+
+export const medicalInformationSchema = z.object({
+  // ... other fields
+  hasScarsOrWounds: z.boolean().default(false),
+  scarsOrWoundsNotes: z.string().optional(),
+  // ... other fields
+});
